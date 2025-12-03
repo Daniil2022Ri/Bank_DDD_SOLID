@@ -29,3 +29,18 @@ spring:
     drop-first: false
   application:
     name: authorization-app
+  kafka:
+    bootstrap-servers: localhost:9092
+    properties:
+      auto.create.topics.enable: true
+      listener:
+        missing-topics-fatal: false
+    consumer:
+      group-id: users-group
+      properties:
+        spring.json.trusted.packages: com.bank.authorization.dtos.events
+    producer:
+      acks: 1
+jwt:
+  secret: secret
+  lifetime: 30m
