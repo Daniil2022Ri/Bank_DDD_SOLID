@@ -25,7 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SuspiciousTransferController {
 
-    private final SuspiciousTransferService service;
+    private  SuspiciousTransferService service;
 
     @Operation(
             summary = "Создать подозрительную транзакцию карты",

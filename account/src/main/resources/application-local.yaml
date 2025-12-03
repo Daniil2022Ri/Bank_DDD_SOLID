@@ -1,5 +1,5 @@
 server:
-  port: 8085
+  port: 8086
   servlet:
     context-path: /api/account
 management:
@@ -14,7 +14,7 @@ management:
         include: '*'
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/postgres
+    url: jdbc:postgresql://localhost:8085/postgres
     username: postgres
     password: 1111
   liquibase:
