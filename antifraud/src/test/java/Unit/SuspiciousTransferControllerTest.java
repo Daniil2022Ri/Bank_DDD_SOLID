@@ -17,6 +17,8 @@ import service.SuspiciousTransferService;
 
 import java.util.List;
 
+import static config.ApplicationConstant.TYPE_CARD;
+import static config.TestConstants.ID_VALID;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -76,24 +78,24 @@ class SuspiciousTransferControllerTest {
     @DisplayName("PUT /card/{id} — успешное обновление")
     void updateCard_success() {
         SuspiciousCardTransferDto dto = cardDto().toBuilder().blocked(true).build();
-        when(service.updateCard(TestConstants.TEST_ID, dto)).thenReturn(dto);
+        when(service.updateCard(ID_VALID, dto)).thenReturn(dto);
 
-        ResponseEntity<SuspiciousCardTransferDto> response = controller.updateCard(TestConstants.TEST_ID, dto);
+        ResponseEntity<SuspiciousCardTransferDto> response = controller.updateCard(ID_VALID, dto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().isBlocked());
-        verify(service).updateCard(TestConstants.TEST_ID, dto);
+        verify(service).updateCard(ID_VALID, dto);
     }
 
     @Test
     @DisplayName("DELETE /card/{id} — успешное удаление")
     void deleteCard_success() {
-        doNothing().when(service).deleteSuspiciousTransfer(TestConstants.TEST_ID, "card");
+        doNothing().when(service).deleteSuspiciousTransfer(ID_VALID, TYPE_CARD);
 
-        ResponseEntity<Void> response = controller.deleteCard(TestConstants.TEST_ID);
+        ResponseEntity<Void> response = controller.deleteCard(ID_VALID);
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(service).deleteSuspiciousTransfer(TestConstants.TEST_ID, "card");
+        verify(service).deleteSuspiciousTransfer(ID_VALID, TYPE_CARD);
     }
 
     @Test
@@ -113,42 +115,42 @@ class SuspiciousTransferControllerTest {
     @DisplayName("GET /card/{id} — получение по ID")
     void getCardById_success() {
         SuspiciousCardTransferDto dto = cardDto();
-        when(service.getCardById(TestConstants.TEST_ID)).thenReturn(dto);
+        when(service.getCardById(TestConstants.ID_VALID)).thenReturn(dto);
 
-        ResponseEntity<SuspiciousCardTransferDto> response = controller.getCardById(TestConstants.TEST_ID);
+        ResponseEntity<SuspiciousCardTransferDto> response = controller.getCardById(TestConstants.ID_VALID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(dto, response.getBody());
-        verify(service).getCardById(TestConstants.TEST_ID);
+        verify(service).getCardById(TestConstants.ID_VALID);
     }
 
     private SuspiciousCardTransferDto cardDto() {
         return SuspiciousCardTransferDto.builder()
-                .id(TestConstants.TEST_ID)
+                .id(TestConstants.ID_VALID)
                 .blocked(TestConstants.BLOCKED_FALSE)
                 .suspicious(TestConstants.SUSPICIOUS_TRUE)
-                .blockedReason(TestConstants.BLOCKED_REASON)
-                .suspiciousReason(TestConstants.SUSPICIOUS_REASON)
+                .blockedReason(TestConstants.REASON_BLOCKED)
+                .suspiciousReason(TestConstants.REASON_SUSPICIOUS)
                 .build();
     }
 
     private SuspiciousPhoneTransferDto phoneDto() {
         return SuspiciousPhoneTransferDto.builder()
-                .id(TestConstants.TEST_ID)
+                .id(TestConstants.ID_VALID)
                 .blocked(TestConstants.BLOCKED_FALSE)
                 .suspicious(TestConstants.SUSPICIOUS_TRUE)
-                .blockedReason(TestConstants.BLOCKED_REASON)
-                .suspiciousReason(TestConstants.SUSPICIOUS_REASON)
+                .blockedReason(TestConstants.REASON_BLOCKED)
+                .suspiciousReason(TestConstants.REASON_SUSPICIOUS)
                 .build();
     }
 
     private SuspiciousAccountTransferDto accountDto() {
         return SuspiciousAccountTransferDto.builder()
-                .id(TestConstants.TEST_ID)
+                .id(TestConstants.ID_VALID)
                 .blocked(TestConstants.BLOCKED_FALSE)
                 .suspicious(TestConstants.SUSPICIOUS_TRUE)
-                .blockedReason(TestConstants.BLOCKED_REASON)
-                .suspiciousReason(TestConstants.SUSPICIOUS_REASON)
+                .blockedReason(TestConstants.REASON_BLOCKED)
+                .suspiciousReason(TestConstants.REASON_SUSPICIOUS)
                 .build();
     }
 }

@@ -4,13 +4,12 @@ import dto.SuspiciousAccountTransferDto;
 import dto.SuspiciousCardTransferDto;
 import dto.SuspiciousPhoneTransferDto;
 import mappers.SuspiciousTransferMapper;
+import mappers.SuspiciousTransferMapperImpl;
 import model.SuspiciousAccountTransfer;
 import model.SuspiciousCardTransfer;
 import model.SuspiciousPhoneTransfer;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,18 +17,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 class SuspiciousTransferMapperTest {
 
-    private SuspiciousTransferMapper mapper;
+    private final SuspiciousTransferMapper mapper = new SuspiciousTransferMapperImpl();
 
     private final Long TEST_ID = 1L;
     private final boolean BLOCKED_TRUE = true;
     private final boolean SUSPICIOUS_TRUE = true;
     private final String SUSPICIOUS_REASON = "Подозрительные действия";
     private final String BLOCKED_REASON = "Причина блокировки";
-
-    @BeforeEach
-    void setUp() {
-        mapper = Mappers.getMapper(SuspiciousTransferMapper.class);
-    }
 
     @Test
     void toCardEntity_WithValidDto_ShouldReturnEntity() {

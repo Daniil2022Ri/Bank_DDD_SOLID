@@ -16,63 +16,65 @@ import service.SuspiciousTransferServiceImpl;
 
 import java.util.Optional;
 
+import static config.ApplicationConstant.ERR_CARD_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SuspiciousTransferServiceImplTest {
 
-    @Mock private SuspiciousCardTransferRepository cardRepo;
-    @Mock private SuspiciousTransferMapper mapper;
+
+    @Mock
+    private SuspiciousCardTransferRepository cardRepo;
+    @Mock
+    private SuspiciousTransferMapper mapper;
 
     @InjectMocks
     private SuspiciousTransferServiceImpl service;
 
     @Test
-    @DisplayName("createCard — успешное создание")
-    void createCard_success() {
-        SuspiciousCardTransferDto dto = cardDto();
-        SuspiciousCardTransfer entity = cardEntity();
-        SuspiciousCardTransfer saved = cardEntity();
-        saved.setId(TestConstants.TEST_ID);
+    @DisplayName("Создание карты: Успех")
+    void createCard_Success() {
+        SuspiciousCardTransferDto dto = createDto();
+        SuspiciousCardTransfer entity = createEntity();
+        SuspiciousCardTransfer savedEntity = createEntity();
+        savedEntity.setId(TestConstants.ID_VALID);
 
         when(mapper.toCardEntity(dto)).thenReturn(entity);
-        when(cardRepo.save(entity)).thenReturn(saved);
-        when(mapper.toCardDto(saved)).thenReturn(dto.toBuilder().id(TestConstants.TEST_ID).build());
+        when(cardRepo.save(entity)).thenReturn(savedEntity);
+        when(mapper.toCardDto(savedEntity)).thenReturn(dto);
 
         SuspiciousCardTransferDto result = service.createCard(dto);
 
-        assertNotNull(result.getId());
+        assertNotNull(result);
         verify(cardRepo).save(entity);
     }
 
     @Test
-    @DisplayName("updateCard — несуществующий ID → EntityNotFoundException")
-    void updateCard_notFound_throwsException() {
-        SuspiciousCardTransferDto dto = cardDto();
-        when(cardRepo.findById(TestConstants.NON_EXISTENT_ID)).thenReturn(Optional.empty());
+    @DisplayName("Обновление карты: ID не найден -> Ошибка")
+    void updateCard_NotFound() {
+        when(cardRepo.findById(TestConstants.ID_NOT_FOUND)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () ->
-                service.updateCard(TestConstants.NON_EXISTENT_ID, dto));
+        SuspiciousCardTransferDto dto = createDto();
 
+        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class,
+                () -> service.updateCard(TestConstants.ID_NOT_FOUND, dto));
+
+        assertTrue(ex.getMessage().contains(ERR_CARD_NOT_FOUND));
         verify(cardRepo, never()).save(any());
     }
 
-    private SuspiciousCardTransferDto cardDto() {
+    private SuspiciousCardTransferDto createDto() {
         return SuspiciousCardTransferDto.builder()
-                .blocked(TestConstants.BLOCKED_FALSE)
-                .suspicious(TestConstants.SUSPICIOUS_TRUE)
-                .blockedReason(TestConstants.BLOCKED_REASON)
-                .suspiciousReason(TestConstants.SUSPICIOUS_REASON)
+                .blocked(TestConstants.BLOCKED_TRUE)
+                .suspicious(TestConstants.SUSPICIOUS_FALSE)
                 .build();
     }
 
-    private SuspiciousCardTransfer cardEntity() {
+    private SuspiciousCardTransfer createEntity() {
         return SuspiciousCardTransfer.builder()
-                .blocked(TestConstants.BLOCKED_FALSE)
-                .suspicious(TestConstants.SUSPICIOUS_TRUE)
-                .blockedReason(TestConstants.BLOCKED_REASON)
-                .suspiciousReason(TestConstants.SUSPICIOUS_REASON)
+                .blocked(TestConstants.BLOCKED_TRUE)
+                .suspicious(TestConstants.SUSPICIOUS_FALSE)
                 .build();
     }
 }

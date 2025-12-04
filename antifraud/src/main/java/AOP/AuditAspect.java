@@ -15,7 +15,6 @@ import java.lang.reflect.Method;
 import static config.ApplicationConstant.BY_ID_TARGET;
 import static config.ApplicationConstant.ENTITY_NAME_GET_ID;
 import static config.ApplicationConstant.ERR_CRITICAL_MSG;
-import static config.ApplicationConstant.ERR_MSG_INP_DETAIL;
 import static config.ApplicationConstant.EXCEPTION_NAME;
 import static config.ApplicationConstant.GET_NAME_TARGET;
 import static config.ApplicationConstant.METHOD_TARGET_CREATE;
@@ -33,10 +32,6 @@ import static config.ApplicationConstant.MSG_NOT_DATE;
 import static config.ApplicationConstant.MSG_RECEIVED;
 import static config.ApplicationConstant.MSG_SUSPICIOUS;
 import static config.ApplicationConstant.MSG_UPDATED;
-import static config.ApplicationConstant.NAME_METHOD_GET_BLOCKED_REASON;
-import static config.ApplicationConstant.NAME_METHOD_GET_SUSPICIOUS_REASON;
-import static config.ApplicationConstant.NAME_METHOD_IS_BLOCKED;
-import static config.ApplicationConstant.NAME_METHOD_IS_SUSPICIOUS;
 import static config.ApplicationConstant.NAME_RETURNING;
 import static config.ApplicationConstant.POINTCUT_CREATE;
 import static config.ApplicationConstant.POINTCUT_DELETE;
@@ -45,6 +40,10 @@ import static config.ApplicationConstant.POINTCUT_SERVICE;
 import static config.ApplicationConstant.POINTCUT_UPDATE;
 import static config.ApplicationConstant.RETURNING_RES;
 import static config.ApplicationConstant.UNKNOWN_NUM;
+import static config.ApplicationConstant.REFLECT_IS_BLOCKED;
+import static config.ApplicationConstant.REFLECT_IS_SUSPICIOUS;
+import static config.ApplicationConstant.REFLECT_GET_BLOCKED_REASON;
+import static config.ApplicationConstant.REFLECT_GET_SUSPICIOUS_REASON;
 
 @Aspect
 @Component
@@ -122,14 +121,18 @@ public class AuditAspect {
         if (dto == null) return MSG_NOT_DATE;
         try {
             Class<?> dtoClass = dto.getClass();
-            Boolean isBlocked = (Boolean) invokeSafe(dtoClass, dto, NAME_METHOD_IS_BLOCKED);
-            Boolean isSuspicious = (Boolean) invokeSafe(dtoClass, dto, NAME_METHOD_IS_SUSPICIOUS);
-            String blockedReason = (String) invokeSafe(dtoClass, dto, NAME_METHOD_GET_BLOCKED_REASON);
-            String suspiciousReason = (String) invokeSafe(dtoClass, dto, NAME_METHOD_GET_SUSPICIOUS_REASON);
-            return String.format(MSG_BLOCKED + isBlocked, MSG_SUSPICIOUS + isSuspicious,
-                    MSG_BLOCKED_REASON + blockedReason, " " + suspiciousReason);
+            Object isBlocked = invokeSafe(dtoClass, dto, REFLECT_IS_BLOCKED);
+            Object isSuspicious = invokeSafe(dtoClass, dto, REFLECT_IS_SUSPICIOUS);
+            String blockedReason = (String) invokeSafe(dtoClass, dto, REFLECT_GET_BLOCKED_REASON);
+            String suspiciousReason = (String) invokeSafe(dtoClass, dto, REFLECT_GET_SUSPICIOUS_REASON);
+
+            return String.format("%s%s, %s%s, %s%s, %s",
+                    MSG_BLOCKED, isBlocked,
+                    MSG_SUSPICIOUS, isSuspicious,
+                    MSG_BLOCKED_REASON, blockedReason,
+                    suspiciousReason);
         } catch (Exception e) {
-            return ERR_MSG_INP_DETAIL + e.getMessage();
+            return "Ошибка извлечения деталей: " + e.getMessage();
         }
     }
 
@@ -140,20 +143,9 @@ public class AuditAspect {
             return null;
         }
     }
-    protected void info(String msg, Object... args) {
-        log.info(msg, args);
-    }
-
-    protected void warn(String msg, Object... args) {
-        log.warn(msg, args);
-    }
-
-    protected void debug(String msg, Object... args) {
-        log.debug(msg, args);
-    }
-
-    protected void error(String msg, Object... args) {
-        log.error(msg, args);
-    }
+    protected void info(String msg, Object... args) { log.info(msg, args); }
+    protected void warn(String msg, Object... args) { log.warn(msg, args); }
+    protected void debug(String msg, Object... args) { log.debug(msg, args); }
+    protected void error(String msg, Object... args) { log.error(msg, args); }
 
 }

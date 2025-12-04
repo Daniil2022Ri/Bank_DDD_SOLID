@@ -29,11 +29,5 @@ public final class AuditLogExpectations {
     public static final String LOG_SUSPICIOUS_TRUE = "Подозрительна= true";
     public static final String LOG_SUSPICIOUS_FALSE = "Подозрительна= false";
 
-    public static String LOG_BLOCKED_REASON() {
-        return "Причина= " + TestConstants.BLOCKED_REASON;
-    }
 
-    public static String LOG_SUSPICIOUS_REASON() {
-        return "Причина подозрительности= " + TestConstants.SUSPICIOUS_REASON;
-    }
 }

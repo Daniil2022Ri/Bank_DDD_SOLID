@@ -3,21 +3,25 @@ package config;
 public class TestConstants {
     private TestConstants() {}
 
-    public static final Long TEST_ID = 1L;
-    public static final Long NON_EXISTENT_ID = 999L;
+    public static final Long ID_VALID = 1L;
+    public static final Long ID_NOT_FOUND = 999L;
 
     public static final boolean BLOCKED_TRUE = true;
     public static final boolean BLOCKED_FALSE = false;
     public static final boolean SUSPICIOUS_TRUE = true;
     public static final boolean SUSPICIOUS_FALSE = false;
 
-    public static final String BLOCKED_REASON = "Тестовая блокировка";
-    public static final String SUSPICIOUS_REASON = "Подозрительная активность";
-    public static final String USERNAME = "test-user";
-    public static final String ENTITY_TYPE_CARD = "SUSPICIOUS_CARD_TRANSFER";
-    public static final String ENTITY_TYPE_PHONE = "SUSPICIOUS_PHONE_TRANSFER";
-    public static final String ENTITY_TYPE_ACCOUNT = "SUSPICIOUS_ACCOUNT_TRANSFER";
+    public static final String REASON_BLOCKED = "Test Blocked Reason";
+    public static final String REASON_SUSPICIOUS = "Test Suspicious Reason";
 
-    public static final String OPERATION_CREATE = "CREATE";
-    public static final String OPERATION_UPDATE = "UPDATE";
+    public static final String ASPECT_TYPE_CARD = "Card";
+    public static final String ASPECT_TYPE_PHONE = "Phone";
+    public static final String ASPECT_TYPE_ACCOUNT = "Account";
+
+    public static final String ASPECT_METHOD_CREATE_CARD = "createCard";
+    public static final String ASPECT_METHOD_UPDATE_CARD = "updateCard";
+
+
+    public static final String LOG_PART_BLOCKED_TRUE = ApplicationConstant.MSG_BLOCKED + "true";
+    public static final String LOG_PART_SUSPICIOUS_TRUE = ApplicationConstant.MSG_SUSPICIOUS + "true";
 }
