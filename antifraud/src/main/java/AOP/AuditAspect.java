@@ -56,9 +56,9 @@ public class AuditAspect {
         try {
             String methodName = joinPoint.getSignature().getName();
             String entityType = methodName.replace(METHOD_TARGET_CREATE, "");
-            log.info(MSG_CREATED, entityType, methodName, extractSuspiciousDetails(result));
+            info(MSG_CREATED, entityType, methodName, extractSuspiciousDetails(result));
         } catch (Exception e) {
-            log.error(MSG_ERR_ASPECT_CREATE, joinPoint.getSignature().getName(), e);
+            error(MSG_ERR_ASPECT_CREATE, joinPoint.getSignature().getName(), e);
         }
     }
 
@@ -68,9 +68,9 @@ public class AuditAspect {
             String methodName = joinPoint.getSignature().getName();
             String entityType = methodName.replace(METHOD_TARGET_UPDATE, "");
             Long id = extractId(result);
-            log.warn(MSG_UPDATED, entityType, id, extractSuspiciousDetails(result));
+            warn(MSG_UPDATED, entityType, id, extractSuspiciousDetails(result));
         } catch (Exception e) {
-            log.error(MSG_ERR_ASPECT_UPDATE, joinPoint.getSignature().getName(), e);
+            error(MSG_ERR_ASPECT_UPDATE, joinPoint.getSignature().getName(), e);
         }
     }
 
@@ -80,9 +80,9 @@ public class AuditAspect {
             Object[] args = joinPoint.getArgs();
             Long id = (args.length > 0) ? (Long) args[0] : null;
             String type = (args.length > 1) ? (String) args[1] : UNKNOWN_NUM;
-            log.info(MSG_DELETED, type, id);
+            info(MSG_DELETED, type, id);
         } catch (Exception e) {
-            log.error(MSG_ERR_ASPECT_DELETE, joinPoint.getSignature().getName(), e);
+            error(MSG_ERR_ASPECT_DELETE, joinPoint.getSignature().getName(), e);
         }
     }
 
@@ -90,9 +90,9 @@ public class AuditAspect {
     public void logExceptions(JoinPoint joinPoint, Exception ex) {
         try {
             String methodName = joinPoint.getSignature().getName();
-            log.error(MSG_ERR_SERVICE, methodName, ex.getMessage());
+            error(MSG_ERR_SERVICE, methodName, ex.getMessage());
         } catch (Exception e) {
-            log.error(ERR_CRITICAL_MSG, e);
+            error(ERR_CRITICAL_MSG, e);
         }
     }
 
@@ -103,11 +103,12 @@ public class AuditAspect {
             Object[] args = joinPoint.getArgs();
             Long id = (args.length > 0) ? (Long) args[0] : null;
             String entityType = methodName.replace(GET_NAME_TARGET, "").replace(BY_ID_TARGET, "");
-            log.debug(MSG_RECEIVED, entityType, id);
+            debug(MSG_RECEIVED, entityType, id);
         } catch (Exception e) {
-            log.error(MSG_ERR_ASPECT_GET, joinPoint.getSignature().getName(), e);
+            error(MSG_ERR_ASPECT_GET, joinPoint.getSignature().getName(), e);
         }
     }
+
     private Long extractId(Object dto) {
         if (dto == null) return null;
         try {
@@ -117,6 +118,7 @@ public class AuditAspect {
             return null;
         }
     }
+
     private String extractSuspiciousDetails(Object dto) {
         if (dto == null) return MSG_NOT_DATE;
         try {
@@ -143,9 +145,9 @@ public class AuditAspect {
             return null;
         }
     }
+
     protected void info(String msg, Object... args) { log.info(msg, args); }
     protected void warn(String msg, Object... args) { log.warn(msg, args); }
     protected void debug(String msg, Object... args) { log.debug(msg, args); }
     protected void error(String msg, Object... args) { log.error(msg, args); }
-
 }

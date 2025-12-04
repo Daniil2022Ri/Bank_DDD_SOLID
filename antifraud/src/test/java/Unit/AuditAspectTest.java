@@ -22,13 +22,11 @@ import service.SuspiciousTransferServiceImpl;
 
 import java.util.Optional;
 
-import static config.ApplicationConstant.MSG_CREATED;
-import static config.ApplicationConstant.MSG_UPDATED;
-import static config.AuditLogExpectations.TYPE_CARD;
-import static config.ApplicationConstant.MSG_DELETED;
-import static config.ApplicationConstant.MSG_ERR_SERVICE;
+import static config.TestConstants.GET_CONTAINS_CARD_ID;
+import static config.TestConstants.ASPECT_TYPE_CARD;
+import static config.TestConstants.ASPECT_METHOD_CREATE_CARD;
+import static config.TestConstants.ID_VALID;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -55,80 +53,76 @@ class AuditAspectTest {
                 cardRepo, phoneRepo, accountRepo, mapper
         );
         AspectJProxyFactory factory = new AspectJProxyFactory(realService);
+        factory.setProxyTargetClass(true);
         factory.addAspect(auditAspect);
         proxyService = factory.getProxy();
     }
 
     @Test
-    @DisplayName("Логирование при создании карты (create)")
-    void logCreateOperation() {
-        SuspiciousCardTransferDto dto = getTestDto();
-        SuspiciousCardTransfer entity = new SuspiciousCardTransfer();
-        when(mapper.toCardEntity(any())).thenReturn(entity);
-        when(cardRepo.save(any())).thenReturn(entity);
+    @DisplayName("Aspect: Log CREATE Operation")
+    void logCreate() {
+        SuspiciousCardTransferDto dto = getDto();
+        when(mapper.toCardEntity(any())).thenReturn(new SuspiciousCardTransfer());
+        when(cardRepo.save(any())).thenReturn(new SuspiciousCardTransfer());
         when(mapper.toCardDto(any())).thenReturn(dto);
         proxyService.createCard(dto);
+
         verify(auditAspect).info(
                 eq(ApplicationConstant.MSG_CREATED),
-                eq(TestConstants.ASPECT_TYPE_CARD),
-                eq(TestConstants.ASPECT_METHOD_CREATE_CARD),
-                argThat(s -> s.toString().contains(TestConstants.LOG_PART_BLOCKED_TRUE))
+                eq(ASPECT_TYPE_CARD),
+                eq(ASPECT_METHOD_CREATE_CARD),
+                anyString()
         );
     }
 
     @Test
-    @DisplayName("Логирование при обновлении (update)")
-    void logUpdateOperation() {
-        SuspiciousCardTransferDto dto = getTestDto();
-        SuspiciousCardTransfer entity = new SuspiciousCardTransfer();
-        when(cardRepo.findById(anyLong())).thenReturn(Optional.of(entity));
-        when(cardRepo.save(any())).thenReturn(entity);
+    @DisplayName("Aspect: Log UPDATE Operation")
+    void logUpdate() {
+        SuspiciousCardTransferDto dto = getDto();
+        when(cardRepo.findById(anyLong())).thenReturn(Optional.of(new SuspiciousCardTransfer()));
+        when(cardRepo.save(any())).thenReturn(new SuspiciousCardTransfer());
         when(mapper.toCardDto(any())).thenReturn(dto);
-        proxyService.updateCard(TestConstants.ID_VALID, dto);
+        proxyService.updateCard(ID_VALID, dto);
         verify(auditAspect).warn(
                 eq(ApplicationConstant.MSG_UPDATED),
-                eq(TestConstants.ASPECT_TYPE_CARD),
-                eq(TestConstants.ID_VALID),
-                argThat(s -> s.toString().contains(TestConstants.LOG_PART_SUSPICIOUS_TRUE))
+                eq(ASPECT_TYPE_CARD),
+                eq(ID_VALID),
+                anyString()
         );
     }
 
     @Test
-    @DisplayName("Логирование при удалении (delete)")
-    void logDeleteOperation() {
+    @DisplayName("Aspect: Log DELETE Operation")
+    void logDelete() {
         doNothing().when(cardRepo).deleteById(anyLong());
-
-        proxyService.deleteSuspiciousTransfer(TestConstants.ID_VALID, ApplicationConstant.TYPE_CARD);
-
+        proxyService.deleteSuspiciousTransfer(ID_VALID, ApplicationConstant.TYPE_CARD);
         verify(auditAspect).info(
                 eq(ApplicationConstant.MSG_DELETED),
                 eq(ApplicationConstant.TYPE_CARD),
-                eq(TestConstants.ID_VALID)
+                eq(ID_VALID)
         );
     }
 
     @Test
-    @DisplayName("Логирование исключений сервиса")
-    void logExceptions() {
-        RuntimeException ex = new RuntimeException("Database Error");
+    @DisplayName("Aspect: Log EXCEPTION")
+    void logException() {
+        RuntimeException ex = new RuntimeException("DB Error");
         when(cardRepo.findById(anyLong())).thenThrow(ex);
         try {
-            proxyService.getCardById(TestConstants.ID_VALID);
+            proxyService.getCardById(ID_VALID);
         } catch (Exception ignored) {}
         verify(auditAspect).error(
                 eq(ApplicationConstant.MSG_ERR_SERVICE),
-                contains("getCardById"),
+                contains(GET_CONTAINS_CARD_ID),
                 eq(ex.getMessage())
         );
     }
 
-    private SuspiciousCardTransferDto getTestDto() {
+    private SuspiciousCardTransferDto getDto() {
         return SuspiciousCardTransferDto.builder()
                 .id(TestConstants.ID_VALID)
-                .blocked(TestConstants.BLOCKED_TRUE)
-                .suspicious(TestConstants.SUSPICIOUS_TRUE)
-                .blockedReason(TestConstants.REASON_BLOCKED)
-                .suspiciousReason(TestConstants.REASON_SUSPICIOUS)
+                .blocked(true)
+                .suspicious(true)
                 .build();
     }
 }

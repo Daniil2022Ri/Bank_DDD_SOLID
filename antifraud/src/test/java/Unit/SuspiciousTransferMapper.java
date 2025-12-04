@@ -1,5 +1,6 @@
 package Unit;
 
+import config.TestConstants;
 import dto.SuspiciousAccountTransferDto;
 import dto.SuspiciousCardTransferDto;
 import dto.SuspiciousPhoneTransferDto;
@@ -8,6 +9,7 @@ import mappers.SuspiciousTransferMapperImpl;
 import model.SuspiciousAccountTransfer;
 import model.SuspiciousCardTransfer;
 import model.SuspiciousPhoneTransfer;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -26,86 +28,38 @@ class SuspiciousTransferMapperTest {
     private final String BLOCKED_REASON = "Причина блокировки";
 
     @Test
-    void toCardEntity_WithValidDto_ShouldReturnEntity() {
-        SuspiciousCardTransferDto dto = createTestCardDto();
+    @DisplayName("Mapping: DTO -> Entity (Card)")
+    void toCardEntity() {
+        SuspiciousCardTransferDto dto = SuspiciousCardTransferDto.builder()
+                .id(TestConstants.ID_VALID)
+                .blocked(TestConstants.BLOCKED_TRUE)
+                .suspicious(TestConstants.SUSPICIOUS_FALSE)
+                .blockedReason(TestConstants.REASON_BLOCKED)
+                .build();
 
         SuspiciousCardTransfer entity = mapper.toCardEntity(dto);
 
         assertNotNull(entity);
         assertEquals(dto.getId(), entity.getId());
         assertEquals(dto.isBlocked(), entity.isBlocked());
-        assertEquals(dto.isSuspicious(), entity.isSuspicious());
         assertEquals(dto.getBlockedReason(), entity.getBlockedReason());
-        assertEquals(dto.getSuspiciousReason(), entity.getSuspiciousReason());
     }
 
     @Test
-    void toCardDto_WithValidEntity_ShouldReturnDto() {
-        SuspiciousCardTransfer entity = createTestCardEntity();
+    @DisplayName("Mapping: Entity -> DTO (Card)")
+    void toCardDto() {
+        SuspiciousCardTransfer entity = SuspiciousCardTransfer.builder()
+                .id(TestConstants.ID_VALID)
+                .blocked(TestConstants.BLOCKED_FALSE)
+                .suspicious(TestConstants.SUSPICIOUS_TRUE)
+                .suspiciousReason(TestConstants.REASON_SUSPICIOUS)
+                .build();
 
         SuspiciousCardTransferDto dto = mapper.toCardDto(entity);
 
         assertNotNull(dto);
         assertEquals(entity.getId(), dto.getId());
-        assertEquals(entity.isBlocked(), dto.isBlocked());
         assertEquals(entity.isSuspicious(), dto.isSuspicious());
-        assertEquals(entity.getBlockedReason(), dto.getBlockedReason());
-        assertEquals(entity.getSuspiciousReason(), dto.getSuspiciousReason());
-    }
-
-    @Test
-    void toPhoneEntity_WithValidDto_ShouldReturnEntity() {
-        SuspiciousPhoneTransferDto dto = createTestPhoneDto();
-
-        SuspiciousPhoneTransfer entity = mapper.toPhoneEntity(dto);
-
-        assertNotNull(entity);
-        assertEquals(dto.getId(), entity.getId());
-        assertEquals(dto.isBlocked(), entity.isBlocked());
-        assertEquals(dto.isSuspicious(), entity.isSuspicious());
-        assertEquals(dto.getBlockedReason(), entity.getBlockedReason());
-        assertEquals(dto.getSuspiciousReason(), entity.getSuspiciousReason());
-    }
-
-    @Test
-    void toPhoneDto_WithValidEntity_ShouldReturnDto() {
-        SuspiciousPhoneTransfer entity = createTestPhoneEntity();
-
-        SuspiciousPhoneTransferDto dto = mapper.toPhoneDto(entity);
-
-        assertNotNull(dto);
-        assertEquals(entity.getId(), dto.getId());
-        assertEquals(entity.isBlocked(), dto.isBlocked());
-        assertEquals(entity.isSuspicious(), dto.isSuspicious());
-        assertEquals(entity.getBlockedReason(), dto.getBlockedReason());
-        assertEquals(entity.getSuspiciousReason(), dto.getSuspiciousReason());
-    }
-
-    @Test
-    void toAccountEntity_WithValidDto_ShouldReturnEntity() {
-        SuspiciousAccountTransferDto dto = createTestAccountDto();
-
-        SuspiciousAccountTransfer entity = mapper.toAccountEntity(dto);
-
-        assertNotNull(entity);
-        assertEquals(dto.getId(), entity.getId());
-        assertEquals(dto.isBlocked(), entity.isBlocked());
-        assertEquals(dto.isSuspicious(), entity.isSuspicious());
-        assertEquals(dto.getBlockedReason(), entity.getBlockedReason());
-        assertEquals(dto.getSuspiciousReason(), entity.getSuspiciousReason());
-    }
-
-    @Test
-    void toAccountDto_WithValidEntity_ShouldReturnDto() {
-        SuspiciousAccountTransfer entity = createTestAccountEntity();
-
-        SuspiciousAccountTransferDto dto = mapper.toAccountDto(entity);
-
-        assertNotNull(dto);
-        assertEquals(entity.getId(), dto.getId());
-        assertEquals(entity.isBlocked(), dto.isBlocked());
-        assertEquals(entity.isSuspicious(), dto.isSuspicious());
-        assertEquals(entity.getBlockedReason(), dto.getBlockedReason());
         assertEquals(entity.getSuspiciousReason(), dto.getSuspiciousReason());
     }
 

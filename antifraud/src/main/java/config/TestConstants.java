@@ -21,6 +21,8 @@ public class TestConstants {
     public static final String ASPECT_METHOD_CREATE_CARD = "createCard";
     public static final String ASPECT_METHOD_UPDATE_CARD = "updateCard";
 
+    public static final String GET_CONTAINS_CARD_ID = "getCardById";
+
 
     public static final String LOG_PART_BLOCKED_TRUE = ApplicationConstant.MSG_BLOCKED + "true";
     public static final String LOG_PART_SUSPICIOUS_TRUE = ApplicationConstant.MSG_SUSPICIOUS + "true";

@@ -35,11 +35,12 @@ public class ApplicationConstant {
     public static final String REFLECT_GET_BLOCKED_REASON = "getBlockedReason";
     public static final String REFLECT_GET_SUSPICIOUS_REASON = "getSuspiciousReason";
 
-    public static final String POINTCUT_SERVICE = "execution(* com.bank.antifraud.service.SuspiciousTransferServiceImpl.*(..))";
-    public static final String POINTCUT_CREATE = "execution(* com.bank.antifraud.service.SuspiciousTransferServiceImpl.create*(..))";
-    public static final String POINTCUT_UPDATE = "execution(* com.bank.antifraud.service.SuspiciousTransferServiceImpl.update*(..))";
-    public static final String POINTCUT_DELETE = "execution(* com.bank.antifraud.service.SuspiciousTransferServiceImpl.deleteSuspiciousTransfer(..))";
-    public static final String POINTCUT_GET_BY_ID = "execution(* com.bank.antifraud.service.SuspiciousTransferServiceImpl.get*ById(..))";
+    public static final String POINTCUT_SERVICE = "execution(* service.SuspiciousTransferServiceImpl.*(..))";
+    public static final String POINTCUT_CREATE = "execution(* service.SuspiciousTransferServiceImpl.create*(..))";
+    public static final String POINTCUT_UPDATE = "execution(* service.SuspiciousTransferServiceImpl.update*(..))";
+    public static final String POINTCUT_DELETE = "execution(* service.SuspiciousTransferServiceImpl.deleteSuspiciousTransfer(..))";
+    public static final String POINTCUT_GET_BY_ID = "execution(* service.SuspiciousTransferServiceImpl.get*ById(..))";
+
     public static final String OPERATION_UPDATE = "UPDATE";
     public static final String OPERATION_CREATE = "CREATE";
     public static final String OPERATION_DELETE = "DELETE";
