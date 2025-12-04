@@ -3,8 +3,8 @@ package service;
 import dto.SuspiciousAccountTransferDto;
 import dto.SuspiciousCardTransferDto;
 import dto.SuspiciousPhoneTransferDto;
-import java.util.List;
 
+import java.util.List;
 
 public interface SuspiciousTransferService {
     SuspiciousCardTransferDto createCard(SuspiciousCardTransferDto dto);

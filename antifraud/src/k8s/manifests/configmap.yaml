@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: antifraud-config
+  namespace: antifraud
+data:
+  application-k8s.yaml: |
+    server:
+      port: 8086
+      servlet:
+        context-path: /api/antifraud
+    
+    spring:
+      application:
+        name: antifraud-app
+      datasource:
+        url: jdbc:postgresql://${DB_HOST:postgres-service}:5432/antifraud
+        username: ${DB_USER:antifraud_user}
+        driver-class-name: org.postgresql.Driver
+        hikari:
+          connection-timeout: 30000
+          maximum-pool-size: 10
+      jpa:
+        hibernate:
+          ddl-auto: validate
+        properties:
+          hibernate:
+            dialect: org.hibernate.dialect.PostgreSQLDialect
+            format_sql: true
+        show-sql: ${DEBUG:false}
+      liquibase:
+        enabled: true
+        change-log: classpath:db/changelog/db.changelog-master.yaml
+    
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,info,metrics,prometheus
+      endpoint:
+        health:
+          show-details: always
+          probes:
+            enabled: true
+    
+    logging:
+      level:
+        com.bank.antifraud: INFO
+        org.springframework.web: INFO
+        org.hibernate.SQL: WARN
+      pattern:
+        console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+        file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+      file:
+        name: /var/log/antifraud/app.log
+        max-size: 10MB
+        max-history: 30

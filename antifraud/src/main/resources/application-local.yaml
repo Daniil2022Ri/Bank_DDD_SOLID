@@ -14,9 +14,9 @@ management:
         include: '*'
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:8085/postgres
+    url: jdbc:postgresql://localhost:5433/postgres
     username: postgres
-    password: 1111
+    password: password
   liquibase:
     default-schema: anti_fraud
     change-log: db/changelog/db.changelog-master.yaml

@@ -1,5 +1,6 @@
 package service;
 
+import dto.AuditDto;
 
 public interface AuditService {
 
@@ -7,4 +8,6 @@ public interface AuditService {
     void logUpdate(String entityType, Object oldEntity, Object newEntity, String username);
     void logCreateOperation(String entityType, Object dto, Object result, String username);
     void logUpdateOperation(String entityType, Long id, Object oldEntity, Object newEntity, String username);
+
+    void logOperation(AuditDto context);
 }

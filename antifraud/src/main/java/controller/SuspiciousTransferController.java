@@ -13,19 +13,28 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import service.SuspiciousTransferService;
-
-
-
 import java.util.List;
+
+import static config.ApplicationConstant.CASE_CARD;
+import static config.ApplicationConstant.CASE_PHONE;
+import static config.ApplicationConstant.CASE_ACCOUNT;
+import static config.ApplicationConstant.MSG_INVALID_TYPE;
 
 @RestController
 @RequestMapping("/suspicious-transfers")
 @AllArgsConstructor
 public class SuspiciousTransferController {
 
-    private  SuspiciousTransferService service;
+    private SuspiciousTransferService service;
 
     @Operation(
             summary = "Создать подозрительную транзакцию карты",
@@ -144,17 +153,17 @@ public class SuspiciousTransferController {
         SuspiciousAccountTransferDto result = service.updateAccount(id, dto);
         return ResponseEntity.ok(result);
     }
-    /*
+
     @PutMapping("/{type}/{id}")
     public ResponseEntity<?> update(@PathVariable String type, @PathVariable Long id, @RequestBody Object dto) {
         return switch (type.toLowerCase()) {
-            case "card" -> ResponseEntity.ok(service.updateCard(id, (SuspiciousCardTransferDto) dto));
-            case "phone" -> ResponseEntity.ok(service.updatePhone(id, (SuspiciousPhoneTransferDto) dto));
-            case "account" -> ResponseEntity.ok(service.updateAccount(id, (SuspiciousAccountTransferDto) dto));
-            default -> ResponseEntity.badRequest().body("Invalid type");
+            case CASE_CARD -> ResponseEntity.ok(service.updateCard(id, (SuspiciousCardTransferDto) dto));
+            case CASE_PHONE -> ResponseEntity.ok(service.updatePhone(id, (SuspiciousPhoneTransferDto) dto));
+            case CASE_ACCOUNT -> ResponseEntity.ok(service.updateAccount(id, (SuspiciousAccountTransferDto) dto));
+            default -> ResponseEntity.badRequest().body(MSG_INVALID_TYPE);
         };
     }
-    */
+
     @Operation(
             summary = "Удалить подозрительную транзакцию карты",
             description = "Удаляет подозрительную транзакцию карты по ID"
@@ -167,7 +176,7 @@ public class SuspiciousTransferController {
     public ResponseEntity<Void> deleteCard(
             @Parameter(description = "ID транзакции", required = true, example = "1")
             @PathVariable Long id) {
-        service.deleteSuspiciousTransfer(id, "card");
+        service.deleteSuspiciousTransfer(id, CASE_CARD);
         return ResponseEntity.noContent().build();
     }
 
@@ -181,9 +190,9 @@ public class SuspiciousTransferController {
     })
     @DeleteMapping("/phone/{id}")
     public ResponseEntity<Void> deletePhone(
-        @Parameter(description = "ID транзакции", required = true, example = "1")
-        @PathVariable Long id) {
-        service.deleteSuspiciousTransfer(id, "phone");
+            @Parameter(description = "ID транзакции", required = true, example = "1")
+            @PathVariable Long id) {
+        service.deleteSuspiciousTransfer(id, CASE_PHONE);
         return ResponseEntity.noContent().build();
     }
 
@@ -199,7 +208,7 @@ public class SuspiciousTransferController {
     public ResponseEntity<Void> deleteAccount(
             @Parameter(description = "ID транзакции", required = true, example = "1")
             @PathVariable Long id) {
-        service.deleteSuspiciousTransfer(id, "account");
+        service.deleteSuspiciousTransfer(id, CASE_ACCOUNT);
         return ResponseEntity.noContent().build();
     }
 
@@ -288,3 +297,4 @@ public class SuspiciousTransferController {
         return ResponseEntity.ok(service.getAccountById(id));
     }
 }
+

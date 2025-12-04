@@ -1,16 +1,15 @@
 package model;
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Entity;
+import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
 @Accessors(chain = true)
 @Entity
@@ -36,4 +35,5 @@ public class SuspiciousAccountTransfer {
 
     @Column(name = "suspicious_reason")
     private String suspiciousReason;
+
 }

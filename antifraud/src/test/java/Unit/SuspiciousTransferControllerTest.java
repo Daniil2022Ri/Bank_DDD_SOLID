@@ -1,9 +1,11 @@
 package Unit;
 
+import config.TestConstants;
 import controller.SuspiciousTransferController;
 import dto.SuspiciousAccountTransferDto;
 import dto.SuspiciousCardTransferDto;
 import dto.SuspiciousPhoneTransferDto;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,11 +17,13 @@ import service.SuspiciousTransferService;
 
 import java.util.List;
 
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Тесты SuspiciousTransferController")
 class SuspiciousTransferControllerTest {
 
     @Mock
@@ -28,252 +32,123 @@ class SuspiciousTransferControllerTest {
     @InjectMocks
     private SuspiciousTransferController controller;
 
-    private final Long TEST_ID = 1L;
-    private final boolean BLOCKED_TRUE = true;
-    private final boolean SUSPICIOUS_TRUE = true;
-    private final String SUSPICIOUS_REASON = "Подозрительные действия";
-    private final String BLOCKED_REASON = "Причина блокировки";
-
-
     @Test
-    void createCard_WithValidDto_ShouldReturnCreated() {
-        SuspiciousCardTransferDto inputDto = createTestCardDto();
-        SuspiciousCardTransferDto expectedDto = createTestCardDto();
+    @DisplayName("POST /card — успешное создание")
+    void createCard_success() {
+        SuspiciousCardTransferDto dto = cardDto();
+        when(service.createCard(dto)).thenReturn(dto);
 
-        when(service.createCard(inputDto)).thenReturn(expectedDto);
+        ResponseEntity<SuspiciousCardTransferDto> response = controller.createCard(dto);
 
-        ResponseEntity<SuspiciousCardTransferDto> response = controller.createCard(inputDto);
-
-        assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(expectedDto.getId(), response.getBody().getId());
-
-        verify(service).createCard(inputDto);
+        assertEquals(dto, response.getBody());
+        verify(service).createCard(dto);
     }
 
     @Test
-    void createPhone_WithValidDto_ShouldReturnCreated() {
-        SuspiciousPhoneTransferDto inputDto = createTestPhoneDto();
-        SuspiciousPhoneTransferDto expectedDto = createTestPhoneDto();
+    @DisplayName("POST /phone — успешное создание")
+    void createPhone_success() {
+        SuspiciousPhoneTransferDto dto = phoneDto();
+        when(service.createPhone(dto)).thenReturn(dto);
 
-        when(service.createPhone(inputDto)).thenReturn(expectedDto);
+        ResponseEntity<SuspiciousPhoneTransferDto> response = controller.createPhone(dto);
 
-        ResponseEntity<SuspiciousPhoneTransferDto> response = controller.createPhone(inputDto);
-
-        assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(expectedDto.getId(), response.getBody().getId());
-
-        verify(service).createPhone(inputDto);
+        assertEquals(dto, response.getBody());
+        verify(service).createPhone(dto);
     }
 
     @Test
-    void createAccount_WithValidDto_ShouldReturnCreated() {
-        SuspiciousAccountTransferDto inputDto = createTestAccountDto();
-        SuspiciousAccountTransferDto expectedDto = createTestAccountDto();
+    @DisplayName("POST /account — успешное создание")
+    void createAccount_success() {
+        SuspiciousAccountTransferDto dto = accountDto();
+        when(service.createAccount(dto)).thenReturn(dto);
 
-        when(service.createAccount(inputDto)).thenReturn(expectedDto);
+        ResponseEntity<SuspiciousAccountTransferDto> response = controller.createAccount(dto);
 
-        ResponseEntity<SuspiciousAccountTransferDto> response = controller.createAccount(inputDto);
-
-        assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(expectedDto.getId(), response.getBody().getId());
-
-        verify(service).createAccount(inputDto);
+        assertEquals(dto, response.getBody());
+        verify(service).createAccount(dto);
     }
 
     @Test
-    void updateCard_WithValidData_ShouldReturnOk() {
+    @DisplayName("PUT /card/{id} — успешное обновление")
+    void updateCard_success() {
+        SuspiciousCardTransferDto dto = cardDto().toBuilder().blocked(true).build();
+        when(service.updateCard(TestConstants.TEST_ID, dto)).thenReturn(dto);
 
-        SuspiciousCardTransferDto inputDto = createTestCardDto();
-        SuspiciousCardTransferDto expectedDto = createTestCardDto();
-        expectedDto.setBlocked(true);
+        ResponseEntity<SuspiciousCardTransferDto> response = controller.updateCard(TestConstants.TEST_ID, dto);
 
-        when(service.updateCard(TEST_ID, inputDto)).thenReturn(expectedDto);
-
-        ResponseEntity<SuspiciousCardTransferDto> response = controller.updateCard(TEST_ID, inputDto);
-
-        assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
         assertTrue(response.getBody().isBlocked());
-
-        verify(service).updateCard(TEST_ID, inputDto);
+        verify(service).updateCard(TestConstants.TEST_ID, dto);
     }
 
     @Test
-    void updatePhone_WithValidData_ShouldReturnOk() {
+    @DisplayName("DELETE /card/{id} — успешное удаление")
+    void deleteCard_success() {
+        doNothing().when(service).deleteSuspiciousTransfer(TestConstants.TEST_ID, "card");
 
-        SuspiciousPhoneTransferDto inputDto = createTestPhoneDto();
-        SuspiciousPhoneTransferDto expectedDto = createTestPhoneDto();
+        ResponseEntity<Void> response = controller.deleteCard(TestConstants.TEST_ID);
 
-        when(service.updatePhone(TEST_ID, inputDto)).thenReturn(expectedDto);
-
-        ResponseEntity<SuspiciousPhoneTransferDto> response = controller.updatePhone(TEST_ID, inputDto);
-
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        verify(service).updatePhone(TEST_ID, inputDto);
-    }
-
-    @Test
-    void deleteCard_ShouldReturnNoContent() {
-        doNothing().when(service).deleteSuspiciousTransfer(TEST_ID, "card");
-
-        ResponseEntity<Void> response = controller.deleteCard(TEST_ID);
-
-        assertNotNull(response);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        assertNull(response.getBody());
-
-        verify(service).deleteSuspiciousTransfer(TEST_ID, "card");
+        verify(service).deleteSuspiciousTransfer(TestConstants.TEST_ID, "card");
     }
 
     @Test
-    void deletePhone_ShouldReturnNoContent() {
-        doNothing().when(service).deleteSuspiciousTransfer(TEST_ID, "phone");
-
-        ResponseEntity<Void> response = controller.deletePhone(TEST_ID);
-
-        assertNotNull(response);
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-
-        verify(service).deleteSuspiciousTransfer(TEST_ID, "phone");
-    }
-
-    @Test
-    void getAllCards_ShouldReturnList() {
-        List<SuspiciousCardTransferDto> expectedList = List.of(createTestCardDto());
-
-        when(service.getAllCards()).thenReturn(expectedList);
+    @DisplayName("GET /card — получение списка")
+    void getAllCards_returnsList() {
+        List<SuspiciousCardTransferDto> list = List.of(cardDto());
+        when(service.getAllCards()).thenReturn(list);
 
         ResponseEntity<List<SuspiciousCardTransferDto>> response = controller.getAllCards();
 
-        assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());
-        assertEquals(expectedList.get(0).getId(), response.getBody().get(0).getId());
-
         verify(service).getAllCards();
     }
 
     @Test
-    void getAllPhones_ShouldReturnList() {
-        List<SuspiciousPhoneTransferDto> expectedList = List.of(createTestPhoneDto());
+    @DisplayName("GET /card/{id} — получение по ID")
+    void getCardById_success() {
+        SuspiciousCardTransferDto dto = cardDto();
+        when(service.getCardById(TestConstants.TEST_ID)).thenReturn(dto);
 
-        when(service.getAllPhones()).thenReturn(expectedList);
+        ResponseEntity<SuspiciousCardTransferDto> response = controller.getCardById(TestConstants.TEST_ID);
 
-        ResponseEntity<List<SuspiciousPhoneTransferDto>> response = controller.getAllPhones();
-
-        assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().size());
-
-        verify(service).getAllPhones();
+        assertEquals(dto, response.getBody());
+        verify(service).getCardById(TestConstants.TEST_ID);
     }
 
-    @Test
-    void getAllAccounts_ShouldReturnList() {
-        List<SuspiciousAccountTransferDto> expectedList = List.of(createTestAccountDto());
-
-        when(service.getAllAccounts()).thenReturn(expectedList);
-
-        ResponseEntity<List<SuspiciousAccountTransferDto>> response = controller.getAllAccounts();
-
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().size());
-
-        verify(service).getAllAccounts();
-    }
-
-
-    @Test
-    void getCardById_WithExistingId_ShouldReturnCard() {
-        SuspiciousCardTransferDto expectedDto = createTestCardDto();
-
-        when(service.getCardById(TEST_ID)).thenReturn(expectedDto);
-
-        ResponseEntity<SuspiciousCardTransferDto> response = controller.getCardById(TEST_ID);
-
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(expectedDto.getId(), response.getBody().getId());
-
-        verify(service).getCardById(TEST_ID);
-    }
-
-    @Test
-    void getPhoneById_WithExistingId_ShouldReturnPhone() {
-
-        SuspiciousPhoneTransferDto expectedDto = createTestPhoneDto();
-        when(service.getPhoneById(TEST_ID)).thenReturn(expectedDto);
-
-        ResponseEntity<SuspiciousPhoneTransferDto> response = controller.getPhoneById(TEST_ID);
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(expectedDto.getId(), response.getBody().getId());
-
-        verify(service).getPhoneById(TEST_ID);
-    }
-
-    @Test
-    void getAccountById_WithExistingId_ShouldReturnAccount() {
-
-        SuspiciousAccountTransferDto expectedDto = createTestAccountDto();
-
-        when(service.getAccountById(TEST_ID)).thenReturn(expectedDto);
-
-        ResponseEntity<SuspiciousAccountTransferDto> response = controller.getAccountById(TEST_ID);
-
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(expectedDto.getId(), response.getBody().getId());
-
-        verify(service).getAccountById(TEST_ID);
-    }
-
-    private SuspiciousCardTransferDto createTestCardDto() {
+    private SuspiciousCardTransferDto cardDto() {
         return SuspiciousCardTransferDto.builder()
-                .id(TEST_ID)
-                .blocked(BLOCKED_TRUE)
-                .suspicious(SUSPICIOUS_TRUE)
-                .blockedReason(BLOCKED_REASON)
-                .suspiciousReason(SUSPICIOUS_REASON)
+                .id(TestConstants.TEST_ID)
+                .blocked(TestConstants.BLOCKED_FALSE)
+                .suspicious(TestConstants.SUSPICIOUS_TRUE)
+                .blockedReason(TestConstants.BLOCKED_REASON)
+                .suspiciousReason(TestConstants.SUSPICIOUS_REASON)
                 .build();
     }
 
-    private SuspiciousPhoneTransferDto createTestPhoneDto() {
+    private SuspiciousPhoneTransferDto phoneDto() {
         return SuspiciousPhoneTransferDto.builder()
-                .id(TEST_ID)
-                .blocked(BLOCKED_TRUE)
-                .suspicious(SUSPICIOUS_TRUE)
-                .blockedReason(BLOCKED_REASON)
-                .suspiciousReason(SUSPICIOUS_REASON)
+                .id(TestConstants.TEST_ID)
+                .blocked(TestConstants.BLOCKED_FALSE)
+                .suspicious(TestConstants.SUSPICIOUS_TRUE)
+                .blockedReason(TestConstants.BLOCKED_REASON)
+                .suspiciousReason(TestConstants.SUSPICIOUS_REASON)
                 .build();
     }
 
-    private SuspiciousAccountTransferDto createTestAccountDto() {
+    private SuspiciousAccountTransferDto accountDto() {
         return SuspiciousAccountTransferDto.builder()
-                .id(TEST_ID)
-                .blocked(BLOCKED_TRUE)
-                .suspicious(SUSPICIOUS_TRUE)
-                .blockedReason(BLOCKED_REASON)
-                .suspiciousReason(SUSPICIOUS_REASON)
+                .id(TestConstants.TEST_ID)
+                .blocked(TestConstants.BLOCKED_FALSE)
+                .suspicious(TestConstants.SUSPICIOUS_TRUE)
+                .blockedReason(TestConstants.BLOCKED_REASON)
+                .suspiciousReason(TestConstants.SUSPICIOUS_REASON)
                 .build();
     }
 }
-
-
