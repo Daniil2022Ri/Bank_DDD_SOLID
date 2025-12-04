@@ -140,4 +140,20 @@ public class AuditAspect {
             return null;
         }
     }
+    protected void info(String msg, Object... args) {
+        log.info(msg, args);
+    }
+
+    protected void warn(String msg, Object... args) {
+        log.warn(msg, args);
+    }
+
+    protected void debug(String msg, Object... args) {
+        log.debug(msg, args);
+    }
+
+    protected void error(String msg, Object... args) {
+        log.error(msg, args);
+    }
+
 }

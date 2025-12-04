@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NotNull
@@ -13,6 +14,7 @@ import lombok.Data;
 @Size
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class SuspiciousCardTransferDto {
 
     private Long id;

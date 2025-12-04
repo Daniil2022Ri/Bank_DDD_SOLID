@@ -6,13 +6,15 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @NotNull
 @Valid
 @Size
 @AllArgsConstructor
+@NoArgsConstructor
 public class SuspiciousAccountTransferDto {
 
     private Long id;

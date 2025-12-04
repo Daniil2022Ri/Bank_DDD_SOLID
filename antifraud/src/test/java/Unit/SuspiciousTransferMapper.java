@@ -7,9 +7,10 @@ import mappers.SuspiciousTransferMapper;
 import model.SuspiciousAccountTransfer;
 import model.SuspiciousCardTransfer;
 import model.SuspiciousPhoneTransfer;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
+import org.mapstruct.factory.Mappers;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 class SuspiciousTransferMapperTest {
 
-    @Mock
     private SuspiciousTransferMapper mapper;
 
     private final Long TEST_ID = 1L;
@@ -25,6 +25,11 @@ class SuspiciousTransferMapperTest {
     private final boolean SUSPICIOUS_TRUE = true;
     private final String SUSPICIOUS_REASON = "Подозрительные действия";
     private final String BLOCKED_REASON = "Причина блокировки";
+
+    @BeforeEach
+    void setUp() {
+        mapper = Mappers.getMapper(SuspiciousTransferMapper.class);
+    }
 
     @Test
     void toCardEntity_WithValidDto_ShouldReturnEntity() {

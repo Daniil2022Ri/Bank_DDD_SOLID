@@ -3,6 +3,7 @@ package model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Entity;
 import jakarta.persistence.Table;
@@ -16,6 +17,7 @@ import jakarta.persistence.GenerationType;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "Account_transfers")
 public class SuspiciousAccountTransfer {
 
